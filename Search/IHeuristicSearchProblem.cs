@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Search
 {
-	interface IHeuristicSearchProblem : ISearchProblem
+	public interface IHeuristicSearchProblem : ISearchProblem
 	{
-		float GetHeuristic(State state);
+		int GetHeuristic(State state);
 	}
 
 	public abstract class HeuristicSearchProblem<T> : SearchProblem<T>, IHeuristicSearchProblem where T : State
 	{
-		public virtual float GetHeuristic(State state)
+		public virtual int GetHeuristic(State state)
 		{
 			return GetHeuristic((T)state);
 		}
 
-		protected abstract float GetHeuristic(T state);
+		protected abstract int GetHeuristic(T state);
 	}
 }

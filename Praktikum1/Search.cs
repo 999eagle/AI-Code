@@ -20,6 +20,14 @@ namespace Praktikum1
 		{
 			return $"K1: {K1}, K2: {K2}";
 		}
+
+		public override bool Equals(Search.State other)
+		{
+			var s = other as State;
+			if (s == null)
+				return false;
+			return s.K1 == this.K1 && s.K2 == this.K2;
+		}
 	}
 
 	class Problem : Search.SearchProblem<State>

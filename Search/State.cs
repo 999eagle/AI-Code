@@ -6,7 +6,35 @@ using System.Threading.Tasks;
 
 namespace Search
 {
-	public abstract class State
+	public abstract class State : IEquatable<State>
 	{
+		public abstract bool Equals(State other);
+
+		public override bool Equals(object obj)
+		{
+			if (obj is State)
+			{
+				return Equals((State)obj);
+			}
+			else
+			{
+				return base.Equals(obj);
+			}
+		}
+
+		public static bool operator ==(State left, State right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(State left, State right)
+		{
+			return !left.Equals(right);
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
 	}
 }

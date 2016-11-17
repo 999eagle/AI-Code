@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Search
 {
-	public sealed class Node
+	public class Node : IEquatable<Node>
 	{
 		public State State { get; private set; }
 		public int Depth { get; private set; }
@@ -34,6 +34,38 @@ namespace Search
 		internal Node(Node parent, StateTransition transition)
 			: this(transition.NewState, parent, transition.Action, transition.ActionCost)
 		{
+		}
+
+		public bool Equals(Node other)
+		{
+			return this.State == other.State;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is Node)
+			{
+				return this.Equals(obj as Node);
+			}
+			else
+			{
+				return base.Equals(obj);
+			}
+		}
+
+		public static bool operator ==(Node lhs, Node rhs)
+		{
+			return lhs.Equals(rhs);
+		}
+
+		public static bool operator !=(Node lhs, Node rhs)
+		{
+			return !lhs.Equals(rhs);
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
 		}
 	}
 }

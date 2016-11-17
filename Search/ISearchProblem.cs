@@ -13,7 +13,7 @@ namespace Search
 		IEnumerable<StateTransition> GetTransitions(State state);
 	}
 
-	public abstract class ISearchProblem<T> : ISearchProblem where T : State
+	public abstract class SearchProblem<T> : ISearchProblem where T : State
 	{
 		public virtual State GetStartState() { return default(T); }
 

@@ -22,7 +22,7 @@ namespace Praktikum1
 		}
 	}
 
-	class Problem : Search.ISearchProblem<State>
+	class Problem : Search.SearchProblem<State>
 	{
 		public override Search.State GetStartState()
 		{

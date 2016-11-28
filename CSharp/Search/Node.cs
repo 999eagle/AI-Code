@@ -38,6 +38,8 @@ namespace Search
 
 		public bool Equals(Node other)
 		{
+			if (other == null)
+				return false;
 			return this.State == other.State;
 		}
 
@@ -55,12 +57,16 @@ namespace Search
 
 		public static bool operator ==(Node lhs, Node rhs)
 		{
+			if (((object)lhs) == null)
+			{
+				return ((object)rhs) == null;
+			}
 			return lhs.Equals(rhs);
 		}
 
 		public static bool operator !=(Node lhs, Node rhs)
 		{
-			return !lhs.Equals(rhs);
+			return !(lhs == rhs);
 		}
 
 		public override int GetHashCode()

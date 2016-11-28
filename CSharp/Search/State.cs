@@ -24,12 +24,16 @@ namespace Search
 
 		public static bool operator ==(State left, State right)
 		{
+			if (((object)left) == null)
+			{
+				return ((object)right) == null;
+			}
 			return left.Equals(right);
 		}
 
 		public static bool operator !=(State left, State right)
 		{
-			return !left.Equals(right);
+			return !(left == right);
 		}
 
 		public override int GetHashCode()

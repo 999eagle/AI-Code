@@ -6,23 +6,42 @@ using System.Threading.Tasks;
 
 namespace Search
 {
+	/// <summary>
+	/// Implementation for the A* algorithm.
+	/// </summary>
 	public sealed class AStarSearch : BaseTreeSearch
 	{
+		/// <summary>
+		/// Instance of <see cref="HeuristicNodeComparer"/> to sort the nodes in the open list.
+		/// </summary>
 		HeuristicNodeComparer _comparer;
 
+		/// <summary>
+		/// Constructor for this algorithm.
+		/// </summary>
+		/// <param name="problem">The search problem to solve.</param>
 		public AStarSearch(IHeuristicSearchProblem problem) : base(problem)
 		{
 			_comparer = new HeuristicNodeComparer();
 		}
 
+		/// <summary>
+		/// See <see cref="BaseTreeSearch.CreateStartNode"/>.
+		/// </summary>
 		protected override Node CreateStartNode()
 		{
 			return new HeuristicNode(_searchProblem.GetStartState(), null, null, 0, ((IHeuristicSearchProblem)_searchProblem).GetHeuristic);
 		}
+		/// <summary>
+		/// See <see cref="BaseTreeSearch.CreateNodeFromTransition(Node, StateTransition)"/>.
+		/// </summary>
 		protected override Node CreateNodeFromTransition(Node parent, StateTransition transition)
 		{
 			return new HeuristicNode((HeuristicNode)parent, transition, ((IHeuristicSearchProblem)_searchProblem).GetHeuristic);
 		}
+		/// <summary>
+		/// See <see cref="BaseTreeSearch.InsertNodeIntoOpenList(Node)"/>.
+		/// </summary>
 		protected override void InsertNodeIntoOpenList(Node newNode)
 		{
 			int i;
@@ -45,6 +64,9 @@ namespace Search
 				_openList.Add(newNode);
 			}
 		}
+		/// <summary>
+		/// See <see cref="BaseTreeSearch.SortOpenList"/>.
+		/// </summary>
 		protected override void SortOpenList()
 		{
 			_openList.Sort(_comparer);

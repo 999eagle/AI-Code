@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace Search
 {
+	/// <summary>
+	/// Abstract base class describing the full state for a search problem.
+	/// </summary>
 	public abstract class State : IEquatable<State>
 	{
+		/// <summary>
+		/// When overridden in a derived class, returns whether this instance is equal to another instance of <see cref="State"/>.
+		/// </summary>
+		/// <param name="other">The instance of <see cref="State"/> to check for equality.</param>
+		/// <returns>True if this instance and the other instance are equal, otherwise returns false.</returns>
 		public abstract bool Equals(State other);
 
 		public override bool Equals(object obj)

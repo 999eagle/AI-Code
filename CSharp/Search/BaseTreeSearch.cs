@@ -6,12 +6,32 @@ using System.Threading.Tasks;
 
 namespace Search
 {
+	/// <summary>
+	/// Abstract base class for tree search algorithms.
+	/// </summary>
 	public abstract class BaseTreeSearch : ITreeSearch
 	{
-		protected List<Node> _openList, _closedList;
+		/// <summary>
+		/// List of nodes to check in the search.
+		/// </summary>
+		protected List<Node> _openList;
+		/// <summary>
+		/// List of checked nodes.
+		/// </summary>
+		protected List<Node> _closedList;
+		/// <summary>
+		/// Problem to solve in this search.
+		/// </summary>
 		protected ISearchProblem _searchProblem;
+		/// <summary>
+		/// Indicates whether the search was already started with <see cref="StartSearch"/>.
+		/// </summary>
 		protected bool _searchStarted = false;
 
+		/// <summary>
+		/// Constructor to be called from derived classes.
+		/// </summary>
+		/// <param name="problem">The problem to solve in this search.</param>
 		protected BaseTreeSearch(ISearchProblem problem)
 		{
 			_searchProblem = problem;
@@ -19,6 +39,10 @@ namespace Search
 			_closedList = new List<Node>();
 		}
 
+		/// <summary>
+		/// Starts searching until either the first result is found or no result exists.
+		/// </summary>
+		/// <returns>A <see cref="SearchResult"/> indicating the result of the search.</returns>
 		public SearchResult StartSearch()
 		{
 			// initialize open and closed list
@@ -29,6 +53,10 @@ namespace Search
 			return ContinueSearch();
 		}
 
+		/// <summary>
+		/// Continues the search started by <see cref="StartSearch"/> until either the next result is found or no result exists.
+		/// </summary>
+		/// <returns>A <see cref="SearchResult"/> indicating the result of the search.</returns>
 		public SearchResult ContinueSearch()
 		{
 			if (!_searchStarted)
@@ -60,9 +88,26 @@ namespace Search
 			return new SearchResult(null);
 		}
 
+		/// <summary>
+		/// When overridden in a derived class, returns the <see cref="Node"/> at which the search should start.
+		/// </summary>
+		/// <returns>The <see cref="Node"/> at which the search should start.</returns>
 		protected abstract Node CreateStartNode();
+		/// <summary>
+		/// When overridden in a derived class, returns a new <see cref="Node"/> corresponding to a given transition from a given node.
+		/// </summary>
+		/// <param name="parent">The <see cref="Node"/> from which to transition.</param>
+		/// <param name="transition">The <see cref="StateTransition"/> describing the transition to the new node.</param>
+		/// <returns>The <see cref="Node"/> corresponding to applying the given transition to the given node.</returns>
 		protected abstract Node CreateNodeFromTransition(Node parent, StateTransition transition);
+		/// <summary>
+		/// When overridden in a derived class, inserts a node into the open list.
+		/// </summary>
+		/// <param name="newNode">The <see cref="Node"/> to insert into the open list.</param>
 		protected abstract void InsertNodeIntoOpenList(Node newNode);
+		/// <summary>
+		/// When overridden in a derived class, sorts the open list according to the search algorithm implemented.
+		/// </summary>
 		protected abstract void SortOpenList();
 	}
 }

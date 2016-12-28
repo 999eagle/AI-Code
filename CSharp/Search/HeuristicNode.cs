@@ -30,4 +30,11 @@ namespace Search
 			return this.EstimatedTotalPathCost.CompareTo(other.EstimatedTotalPathCost);
 		}
 	}
+	public class HeuristicNodeComparer : IComparer<Node>
+	{
+		public int Compare(Node lhs, Node rhs)
+		{
+			return ((HeuristicNode)lhs).CompareTo((HeuristicNode)rhs);
+		}
+	}
 }

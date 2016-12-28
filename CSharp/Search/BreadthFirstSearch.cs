@@ -6,50 +6,29 @@ using System.Threading.Tasks;
 
 namespace Search
 {
-	public sealed class BreadthFirstSearch
+	public sealed class BreadthFirstSearch : BaseTreeSearch
 	{
-		ISearchProblem _problem;
-		List<Node> _openList = new List<Node>();
-
-		public BreadthFirstSearch(ISearchProblem problem)
+		public BreadthFirstSearch(ISearchProblem problem) : base(problem)
 		{
-			_problem = problem;
 		}
 
-		public List<StateTransition> Search()
+		protected override Node CreateStartNode()
 		{
-			_openList.Clear();
-			_openList.Add(new Node(_problem.GetStartState(), null, null, 0));
-			while (true)
-			{
-				var node = _openList[0];
-				foreach (var transition in _problem.GetTransitions(node.State))
-				{
-					var newNode = new Node(node, transition);
-					if (_problem.IsFinalState(newNode.State))
-					{
-						return GetTransitionsToNode(newNode);
-					}
-					_openList.Add(newNode);
-				}
-				_openList.Remove(node);
-			}
+			return new Node(_searchProblem.GetStartState(), null, null, 0);
 		}
-
-		private List<StateTransition> GetTransitionsToNode(Node node)
+		protected override Node CreateNodeFromTransition(Node parent, StateTransition transition)
 		{
-			if (node.Parent == null)
-			{
-				var list = new List<StateTransition>();
-				list.Add(new StateTransition { Action = "Start", ActionCost = 0, NewState = node.State });
-				return list;
-			}
-			var parentTransitions = GetTransitionsToNode(node.Parent);
-			parentTransitions.Add(new StateTransition {
-				Action = node.Action,
-				ActionCost = node.PathCost - node.Parent.PathCost,
-				NewState = node.State });
-			return parentTransitions;
+			return new Node(parent, transition);
+		}
+		protected override void InsertNodeIntoOpenList(Node newNode)
+		{
+			// insert node at the end
+			_openList.Add(newNode);
+		}
+		protected override void SortOpenList()
+		{
+			// no sorting needed for a plain breadth first search because new nodes are always inserted at the end of the open list
+			// thus the new nodes with the highest depth are always at the end --> breadth first search
 		}
 	}
 }

@@ -6,79 +6,48 @@ using System.Threading.Tasks;
 
 namespace Search
 {
-	public sealed class AStarSearch
+	public sealed class AStarSearch : BaseTreeSearch
 	{
-		IHeuristicSearchProblem _problem;
+		HeuristicNodeComparer _comparer;
 
-		public AStarSearch(IHeuristicSearchProblem problem)
+		public AStarSearch(IHeuristicSearchProblem problem) : base(problem)
 		{
-			_problem = problem;
+			_comparer = new HeuristicNodeComparer();
 		}
 
-		public List<StateTransition> Search()
+		protected override Node CreateStartNode()
 		{
-			var closedList = new List<HeuristicNode>();
-			var openList = new List<HeuristicNode>();
-			openList.Add(new HeuristicNode(_problem.GetStartState(), null, null, 0, _problem.GetHeuristic));
-			while (openList.Any())
-			{
-				// open list is sorted --> openList[0] is always the node with the lowest estimated total path cost
-				var node = openList[0];
-				if (_problem.IsFinalState(node.State))
-				{
-					// final state --> return path
-					return GetTransitionsToNode(node);
-				}
-				openList.RemoveAt(0);
-				closedList.Add(node);
-				foreach (var transition in _problem.GetTransitions(node.State))
-				{
-					// any nodes on the closed list were already checked
-					if (closedList.Any(h => h.State == transition.NewState))
-						continue;
-					// create the new node
-					var newNode = new HeuristicNode(node, transition, _problem.GetHeuristic);
-					int i;
-					for (i = 0; i < openList.Count; i++)
-					{
-						if (openList[i] == newNode)
-						{
-							// the node already exists on the open list --> replace it if the new path is shorter
-							if (openList[i].PathCost > newNode.PathCost)
-							{
-								openList[i] = newNode;
-							}
-							break;
-						}
-					}
-					// node wasn't found in the open list --> add it
-					if (i == openList.Count)
-					{
-						openList.Add(newNode);
-					}
-					// sort the open list. default sorting for heuristic nodes is by estimated total path cost
-					openList.Sort();
-				}
-			}
-			return null;
+			return new HeuristicNode(_searchProblem.GetStartState(), null, null, 0, ((IHeuristicSearchProblem)_searchProblem).GetHeuristic);
 		}
-
-		private List<StateTransition> GetTransitionsToNode(Node node)
+		protected override Node CreateNodeFromTransition(Node parent, StateTransition transition)
 		{
-			if (node.Parent == null)
+			return new HeuristicNode((HeuristicNode)parent, transition, ((IHeuristicSearchProblem)_searchProblem).GetHeuristic);
+		}
+		protected override void InsertNodeIntoOpenList(Node newNode)
+		{
+			int i;
+			for (i = 0; i < _openList.Count; i++)
 			{
-				var list = new List<StateTransition>();
-				list.Add(new StateTransition { Action = "Start", ActionCost = 0, NewState = node.State });
-				return list;
+				if (_openList[i] == newNode)
+				{
+					// node with the same state (same node) already exists on the open list
+					// --> replace if the path is shorter
+					if (_openList[i].PathCost > newNode.PathCost)
+					{
+						_openList[i] = newNode;
+					}
+					break;
+				}
 			}
-			var parentTransitions = GetTransitionsToNode(node.Parent);
-			parentTransitions.Add(new StateTransition
+			// node wasn't found in open list --> add it
+			if (i == _openList.Count)
 			{
-				Action = node.Action,
-				ActionCost = node.PathCost - node.Parent.PathCost,
-				NewState = node.State
-			});
-			return parentTransitions;
+				_openList.Add(newNode);
+			}
+		}
+		protected override void SortOpenList()
+		{
+			_openList.Sort(_comparer);
 		}
 	}
 }

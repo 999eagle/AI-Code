@@ -89,6 +89,37 @@ namespace Search
 		}
 
 		/// <summary>
+		/// Gets multiple search results or all results if limit is 0.
+		/// </summary>
+		/// <param name="limit">The maximum number of results to return or 0 to return all results.</param>
+		/// <returns>An enumerator of search results.</returns>
+		public IEnumerator<SearchResult> GetAllSearchResults(int limit = 0)
+		{
+			int found = 0;
+			SearchResult result;
+			do
+			{
+				if (!_searchStarted)
+				{
+					result = StartSearch();
+				}
+				else
+				{
+					result = ContinueSearch();
+				}
+				found++;
+				if (result.Success)
+				{
+					yield return result;
+				}
+				else
+				{
+					yield break;
+				}
+			} while (limit == 0 || found < limit);
+		}
+
+		/// <summary>
 		/// When overridden in a derived class, returns the <see cref="Node"/> at which the search should start.
 		/// </summary>
 		/// <returns>The <see cref="Node"/> at which the search should start.</returns>

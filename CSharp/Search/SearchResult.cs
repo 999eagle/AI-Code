@@ -69,9 +69,7 @@ namespace Search
 			}
 			if (node.Parent == null)
 			{
-				var list = new List<StateTransition>();
-				list.Add(new StateTransition { Action = "Start", ActionCost = 0, NewState = node.State });
-				return list;
+				return new List<StateTransition>();
 			}
 			var parentTransitions = GetTransitionsToNode(node.Parent);
 			parentTransitions.Add(new StateTransition

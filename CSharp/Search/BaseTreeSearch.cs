@@ -66,13 +66,13 @@ namespace Search
 			while (_openList.Any())
 			{
 				var node = _openList[0];
+				_openList.Remove(node);
+				_closedList.Add(node);
 				// check for final node
 				if (_searchProblem.IsFinalState(node.State))
 				{
 					return new SearchResult(node);
 				}
-				_openList.Remove(node);
-				_closedList.Add(node);
 				// iterate through transitions
 				foreach (var transition in _searchProblem.GetTransitions(node.State))
 				{
@@ -93,7 +93,7 @@ namespace Search
 		/// </summary>
 		/// <param name="limit">The maximum number of results to return or 0 to return all results.</param>
 		/// <returns>An enumerator of search results.</returns>
-		public IEnumerator<SearchResult> GetAllSearchResults(int limit = 0)
+		public IEnumerable<SearchResult> GetAllSearchResults(int limit = 0)
 		{
 			int found = 0;
 			SearchResult result;

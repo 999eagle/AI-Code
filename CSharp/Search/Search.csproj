@@ -43,6 +43,7 @@
     <Compile Include="AStarSearch.cs" />
     <Compile Include="BaseTreeSearch.cs" />
     <Compile Include="BreadthFirstSearch.cs" />
+    <Compile Include="DepthFirstSearch.cs" />
     <Compile Include="HeuristicNode.cs" />
     <Compile Include="IHeuristicSearchProblem.cs" />
     <Compile Include="ISearchProblem.cs" />

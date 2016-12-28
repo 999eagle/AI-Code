@@ -10,6 +10,7 @@ namespace Search
 	{
 		protected List<Node> _openList, _closedList;
 		protected ISearchProblem _searchProblem;
+		protected bool _searchStarted = false;
 
 		protected BaseTreeSearch(ISearchProblem problem)
 		{
@@ -18,19 +19,29 @@ namespace Search
 			_closedList = new List<Node>();
 		}
 
-		public IEnumerable<StateTransition> Search()
+		public SearchResult StartSearch()
 		{
 			// initialize open and closed list
 			_openList.Clear();
 			_closedList.Clear();
 			_openList.Add(CreateStartNode());
+			_searchStarted = true;
+			return ContinueSearch();
+		}
+
+		public SearchResult ContinueSearch()
+		{
+			if (!_searchStarted)
+			{
+				return null;
+			}
 			while (_openList.Any())
 			{
 				var node = _openList[0];
 				// check for final node
 				if (_searchProblem.IsFinalState(node.State))
 				{
-					return GetTransitionsToNode(node);
+					return new SearchResult(node);
 				}
 				_openList.Remove(node);
 				_closedList.Add(node);
@@ -46,30 +57,12 @@ namespace Search
 				}
 				SortOpenList();
 			}
-			return null;
+			return new SearchResult(null);
 		}
 
 		protected abstract Node CreateStartNode();
 		protected abstract Node CreateNodeFromTransition(Node parent, StateTransition transition);
 		protected abstract void InsertNodeIntoOpenList(Node newNode);
 		protected abstract void SortOpenList();
-
-		protected List<StateTransition> GetTransitionsToNode(Node node)
-		{
-			if (node.Parent == null)
-			{
-				var list = new List<StateTransition>();
-				list.Add(new StateTransition { Action = "Start", ActionCost = 0, NewState = node.State });
-				return list;
-			}
-			var parentTransitions = GetTransitionsToNode(node.Parent);
-			parentTransitions.Add(new StateTransition
-			{
-				Action = node.Action,
-				ActionCost = node.PathCost - node.Parent.PathCost,
-				NewState = node.State
-			});
-			return parentTransitions;
-		}
 	}
 }

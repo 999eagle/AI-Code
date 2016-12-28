@@ -8,6 +8,7 @@ namespace Search
 {
 	public interface ITreeSearch
 	{
-		IEnumerable<StateTransition> Search();
+		SearchResult StartSearch();
+		SearchResult ContinueSearch();
 	}
 }

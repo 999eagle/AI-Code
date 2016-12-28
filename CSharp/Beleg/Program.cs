@@ -10,11 +10,11 @@ namespace Beleg
 	{
 		static void Main(string[] args)
 		{
-			var problem = new QueenProblem.Problem(8);
+			var problem = new QueenProblem.Problem(12);
 			var search = new Search.DepthFirstSearch(problem);
 			Console.WriteLine("Suche...");
-			var transitions = search.Search();
-			foreach (var transition in transitions)
+			var result = search.StartSearch();
+			foreach (var transition in result.TransitionsToFinalState)
 			{
 				Console.WriteLine($"{transition.Action}: {transition.NewState.ToString()}");
 			}

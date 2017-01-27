@@ -63,8 +63,10 @@ namespace Search
 			{
 				return null;
 			}
+			// as long as nodes exist in the open list
 			while (_openList.Any())
 			{
+				// take the first one and expand it
 				var node = _openList[0];
 				_openList.Remove(node);
 				_closedList.Add(node);

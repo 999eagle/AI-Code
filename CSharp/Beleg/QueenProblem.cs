@@ -7,9 +7,18 @@ using Search;
 
 namespace Beleg.QueenProblem
 {
+	/// <summary>
+	/// Represents the position of a single queen on the chess board.
+	/// </summary>
 	struct Position
 	{
+		/// <summary>
+		/// The X coordinate of this position.
+		/// </summary>
 		public int X { get; set; }
+		/// <summary>
+		/// The Y coordinate of this position.
+		/// </summary>
 		public int Y { get; set; }
 
 		public override string ToString()
@@ -17,9 +26,19 @@ namespace Beleg.QueenProblem
 			return $"({X}, {Y})";
 		}
 	}
+	/// <summary>
+	/// Represents a state of the search.
+	/// </summary>
 	class State : Search.State
 	{
+		/// <summary>
+		/// Contains all positions of currently placed queens.
+		/// </summary>
 		public Position[] Positions { get; }
+		/// <summary>
+		/// Creates a new instance of this class using the specified positions for queens.
+		/// </summary>
+		/// <param name="positions">An array containing the positions of all currently placed queens.</param>
 		public State(Position[] positions)
 		{
 			Positions = positions;
@@ -38,6 +57,11 @@ namespace Beleg.QueenProblem
 			return "Damen auf " + Positions.Select(p => p.ToString()).Aggregate((a,b) => $"{a}, {b}");
 		}
 
+		/// <summary>
+		/// Checks whether two states are equal. Two states are defined equal when they contain the same positions in not necessarily the same order.
+		/// </summary>
+		/// <param name="other">The other state to test for equality with this state.</param>
+		/// <returns>True if both states are equal, otherwise false.</returns>
 		public override bool Equals(Search.State other)
 		{
 			var s = other as State;
@@ -54,22 +78,45 @@ namespace Beleg.QueenProblem
 			return true;
 		}
 	}
+	/// <summary>
+	/// Represents the queen problem with a given board size as a search problem solvable by the Search library.
+	/// </summary>
 	class Problem : SearchProblem<State>
 	{
+		/// <summary>
+		/// The size of the chess board and also the number of queens to place.
+		/// </summary>
 		private int _boardSize;
+		/// <summary>
+		/// Creates a new instance of the queen problem with a given board size.
+		/// </summary>
+		/// <param name="boardSize">The board size for which the queen problem should be solved.</param>
 		public Problem(int boardSize)
 		{
 			_boardSize = boardSize;
 		}
-
+		/// <summary>
+		/// Gets the state where the search should start.
+		/// </summary>
+		/// <returns>The state where the search should start.</returns>
 		public override Search.State GetStartState()
 		{
 			return new State(new Position[0]);
 		}
+		/// <summary>
+		/// Determines whether a given state is a final state of the search.
+		/// </summary>
+		/// <param name="state">The state to test.</param>
+		/// <returns>True if the given state is a final state, otherwise false.</returns>
 		protected override bool IsFinalState(State state)
 		{
 			return state.Positions.Length == _boardSize;
 		}
+		/// <summary>
+		/// Gets a list of transitions possible from a given state.
+		/// </summary>
+		/// <param name="state">The state to transition from.</param>
+		/// <returns>An enumerable of possible transitions from the given state.</returns>
 		protected override IEnumerable<StateTransition> GetTransitions(State state)
 		{
 			var transitions = new List<StateTransition>();
@@ -96,6 +143,12 @@ namespace Beleg.QueenProblem
 			return transitions;
 		}
 
+		/// <summary>
+		/// Given the current state and a position for a new queen, creates a new state representing all placed queens and the new queen.
+		/// </summary>
+		/// <param name="old">The old state containing all currently placed queens.</param>
+		/// <param name="additionalPosition">The position of the new queen to include in the created state.</param>
+		/// <returns>A new state representing all placed queens and the new queen.</returns>
 		private State CreateStateWithAddedPosition(State old, Position additionalPosition)
 		{
 			var newPos = new Position[old.Positions.Length + 1];
@@ -103,6 +156,13 @@ namespace Beleg.QueenProblem
 			newPos[newPos.Length - 1] = additionalPosition;
 			return new State(newPos);
 		}
+		/// <summary>
+		/// Checks that a given position is still free and valid for a new queen on the board.
+		/// </summary>
+		/// <param name="state">The current state the board is in.</param>
+		/// <param name="x">The x coord to check.</param>
+		/// <param name="y">The y coord to check.</param>
+		/// <returns>True if a queen can be placed on the given coordinates, otherwise false.</returns>
 		private bool PositionFree(State state, int x, int y)
 		{
 			// if any position has either same x, same y or same diagonal the position is not free
